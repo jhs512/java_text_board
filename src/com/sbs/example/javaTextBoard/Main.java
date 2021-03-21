@@ -22,6 +22,8 @@ class App {
 
 	public App() {
 		articleController = new ArticleController();
+
+		articleController.makeTestData();
 	}
 
 	public void run() {
@@ -55,6 +57,28 @@ class ArticleController {
 		articlesLastId = 0;
 	}
 
+	private int addArticle(String title, String body) {
+		int id = articlesLastId + 1;
+		String regDate = Util.getNowDateStr();
+		Article article = new Article(id, regDate, title, body);
+		articles.add(article);
+		articlesLastId++;
+
+		return articlesLastId;
+	}
+
+	public void makeTestData() {
+		int testDataCount = 40;
+
+		for (int i = 0; i < testDataCount; i++) {
+			int id = i + 1;
+			String title = (id % 2 == 0 ? "잘가_" : "안녕_") + id;
+			String body = (id % 2 == 0 ? "조심히 가렴_" : "반가워_") + id;
+
+			addArticle(title, body);
+		}
+	}
+
 	public void showList() {
 		System.out.println("= 게시물 리스트 - 시작 =");
 
@@ -75,18 +99,12 @@ class ArticleController {
 		String title = App.sc.nextLine().trim();
 		System.out.printf("내용 : ");
 		String body = App.sc.nextLine().trim();
-		String regDate = Util.getNowDateStr();
-		int id = articlesLastId + 1;
 
-		Article article = new Article(id, regDate, title, body);
-		articlesLastId++;
-
-		articles.add(article);
+		int id = addArticle(title, body);
 
 		System.out.printf("%d번 글이 생성되었습니다.\n", id);
 		System.out.println("= 게시물 작성 - 끝 =");
 	}
-
 }
 
 class Article {
