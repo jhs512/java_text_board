@@ -83,15 +83,29 @@ class ArticleController {
 	public void showList(String command) {
 		String[] commandBits = command.split(" ");
 		int pageParamIndex = commandBits.length - 1;
-		
+
 		int page = Integer.parseInt(commandBits[pageParamIndex]);
-		
-		System.out.printf("= 게시물 리스트(%dp) - 시작 =\n", page);
+		int totalPage = (int) Math.ceil(articles.size() / (float) ITEMS_COUNT_IN_A_PAGE);
+
+		if (page < 1) {
+			page = 1;
+		} else if (page > totalPage) {
+			page = totalPage;
+		}
+
+		System.out.printf("= 게시물 리스트(%dp/%dp) - 시작 =\n", page, totalPage);
 
 		System.out.println("번호 / 날짜 / 제목");
 
 		int startIndex = articles.size() - 1;
+
+		startIndex -= ITEMS_COUNT_IN_A_PAGE * (page - 1);
+
 		int endIndex = startIndex - ITEMS_COUNT_IN_A_PAGE + 1;
+
+		if (endIndex < 0) {
+			endIndex = 0;
+		}
 
 		for (int i = startIndex; i >= endIndex; i--) {
 			Article article = articles.get(i);
@@ -99,7 +113,7 @@ class ArticleController {
 			System.out.printf("%d / %s / %s\n", article.getId(), article.getRegDate(), article.getTitle());
 		}
 
-		System.out.printf("= 게시물 리스트(%dp) - 끝 =\n", page);
+		System.out.printf("= 게시물 리스트(%dp/%dp) - 끝 =\n", page, totalPage);
 	}
 
 	public void doAdd() {
