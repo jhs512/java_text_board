@@ -49,6 +49,7 @@ class App {
 }
 
 class ArticleController {
+	private static final int ITEMS_COUNT_IN_A_PAGE = 5;
 	private List<Article> articles;
 	private int articlesLastId;
 
@@ -84,7 +85,10 @@ class ArticleController {
 
 		System.out.println("번호 / 날짜 / 제목");
 
-		for (int i = articles.size() - 1; i >= 0; i--) {
+		int startIndex = articles.size() - 1;
+		int endIndex = startIndex - ITEMS_COUNT_IN_A_PAGE + 1;
+
+		for (int i = startIndex; i >= endIndex; i--) {
 			Article article = articles.get(i);
 
 			System.out.printf("%d / %s / %s\n", article.getId(), article.getRegDate(), article.getTitle());
