@@ -84,6 +84,14 @@ class ArticleController {
 		String[] commandBits = command.split(" ");
 		int pageParamIndex = commandBits.length - 1;
 
+		String searchKeyword = "";
+
+		if (commandBits.length == 4) {
+			searchKeyword = commandBits[commandBits.length - 2];
+		}
+
+		List<Article> articles = getArticles(searchKeyword);
+
 		int page = Integer.parseInt(commandBits[pageParamIndex]);
 		int totalPage = (int) Math.ceil(articles.size() / (float) ITEMS_COUNT_IN_A_PAGE);
 
@@ -98,8 +106,10 @@ class ArticleController {
 		System.out.println("번호 / 날짜 / 제목");
 
 		int startIndex = articles.size() - 1;
-
-		startIndex -= ITEMS_COUNT_IN_A_PAGE * (page - 1);
+		
+		if ( startIndex > 0 ) {
+			startIndex -= ITEMS_COUNT_IN_A_PAGE * (page - 1);			
+		}
 
 		int endIndex = startIndex - ITEMS_COUNT_IN_A_PAGE + 1;
 
@@ -114,6 +124,30 @@ class ArticleController {
 		}
 
 		System.out.printf("= 게시물 리스트(%dp/%dp) - 끝 =\n", page, totalPage);
+	}
+
+	private List<Article> getArticles(String searchKeyword) {
+		if (searchKeyword == null || searchKeyword.length() == 0) {
+			return articles;
+		}
+
+		List<Article> articles = new ArrayList<>();
+
+		for (Article article : this.articles) {
+			boolean matched = false;
+
+			if (article.getTitle().contains(searchKeyword)) {
+				matched = true;
+			} else if (article.getBody().contains(searchKeyword)) {
+				matched = true;
+			}
+
+			if (matched) {
+				articles.add(article);
+			}
+		}
+
+		return articles;
 	}
 
 	public void doAdd() {
