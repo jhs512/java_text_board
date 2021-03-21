@@ -36,8 +36,8 @@ class App {
 				continue;
 			if (command.equals("article add")) {
 				articleController.doAdd();
-			} else if (command.equals("article list")) {
-				articleController.showList();
+			} else if (command.startsWith("article list ")) {
+				articleController.showList(command);
 			} else if (command.equals("system exit")) {
 				System.out.println("프로그램을 종료합니다.");
 				break;
@@ -80,8 +80,13 @@ class ArticleController {
 		}
 	}
 
-	public void showList() {
-		System.out.println("= 게시물 리스트 - 시작 =");
+	public void showList(String command) {
+		String[] commandBits = command.split(" ");
+		int pageParamIndex = commandBits.length - 1;
+		
+		int page = Integer.parseInt(commandBits[pageParamIndex]);
+		
+		System.out.printf("= 게시물 리스트(%dp) - 시작 =\n", page);
 
 		System.out.println("번호 / 날짜 / 제목");
 
@@ -94,7 +99,7 @@ class ArticleController {
 			System.out.printf("%d / %s / %s\n", article.getId(), article.getRegDate(), article.getTitle());
 		}
 
-		System.out.println("= 게시물 리스트 - 끝 =");
+		System.out.printf("= 게시물 리스트(%dp) - 끝 =\n", page);
 	}
 
 	public void doAdd() {
